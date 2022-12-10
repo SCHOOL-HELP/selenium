@@ -57,3 +57,9 @@ runs:
         echo '${{ inputs.gcs-key }}' >> gcs.json
       if: runner.os != 'Windows'
       shell: bash
+    - run: echo "build --remote_upload_local_results=false" >> .bazelrc.cache.local
+      if: github.ref != 'refs/head/trunk' && runner.os != 'Windows'
+      shell: bash
+    - run: echo "build --remote_upload_local_results=false">>.bazelrc.cache.local
+      if: github.ref != 'refs/head/trunk' && runner.os == 'Windows'
+      shell: cmd
