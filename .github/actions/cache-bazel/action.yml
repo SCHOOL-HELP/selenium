@@ -48,18 +48,12 @@ runs:
           ${{ runner.os }}-bazel-${{ inputs.workflow }}-${{ inputs.key }}-
           ${{ runner.os }}-bazel-${{ inputs.workflow }}-
     - run: |
-        copy .github\.bazelrc.cache.local .
-        echo ${{ inputs.gcs-key }}>>gcs.json
-      if: runner.os == 'Windows'
-      shell: cmd
-    - run: |
-        cp .github/.bazelrc.cache.local .
         echo '${{ inputs.gcs-key }}' >> gcs.json
-      if: runner.os != 'Windows'
+        echo "build --remote_upload_local_results=true --google_credentials=gcs.json" >> .bazelrc.cache.local
+      if: github.ref == 'refs/head/trunk' && runner.os != 'Windows'
       shell: bash
-    - run: echo "build --remote_upload_local_results=false" >> .bazelrc.cache.local
-      if: github.ref != 'refs/head/trunk' && runner.os != 'Windows'
-      shell: bash
-    - run: echo "build --remote_upload_local_results=false">>.bazelrc.cache.local
-      if: github.ref != 'refs/head/trunk' && runner.os == 'Windows'
+    - run: |
+        echo ${{ inputs.gcs-key }}>>gcs.json
+        echo "build --remote_upload_local_results=true --google_credentials=gcs.json">>.bazelrc.cache.local
+      if: github.ref == 'refs/head/trunk' && runner.os == 'Windows'
       shell: cmd

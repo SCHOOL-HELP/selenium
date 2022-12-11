@@ -1,1 +1,0 @@
-build --remote_cache=https://storage.googleapis.com/seleniumhq-bazel-remote-cache --google_credentials=gcs.json
